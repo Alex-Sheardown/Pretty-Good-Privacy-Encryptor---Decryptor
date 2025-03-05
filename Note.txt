@@ -1,0 +1,16 @@
+
+
+I would like to have the first version be a command line program. 
+This means I can access all functions via text prompts. 
+
+It should be clean and profesional. Properly formated 
+1. doesn't crash
+2. has all needed data
+    a. keys
+    b. message
+    c. etc
+3. basic easy to use commands
+    a. encrypt
+    b. decrypt
+    c. generate keys
+    d. etc
