@@ -1,9 +1,5 @@
-import tkinter
-import PyQt6
 import gnupg
-import os
 import encryption_functions
-import argparse
 
 # From gnupg documentation: GnuPG works on the basis of a “home directory” which is used to store public and private keyring files as well as a trust database.
 # You need to identify in advance which directory on the end-user system will be used as the home directory,
@@ -27,7 +23,7 @@ while option != "end":
         + "c: create a new key \n"
         + "e: encrypt a message \n"
         + "ex: export a key \n"
-        + "in: import a key \n"
+        + "im: import a key \n"
         + "d: decrypt a message \n"
         + "end: terminate the program. \n"
     )
@@ -47,11 +43,11 @@ while option != "end":
     elif option == "im":
         
         
-        with open(r"C:\Users\Darkm\GPGInfo\key_export.asc","r") as file:
+        with open(r"GPGInfo\key_export.asc","r") as file:
             key_data = file.read()
         
         
-        with open(r"C:\Users\Darkm\GPGInfo\secret_key_to_export.asc","r") as file:
+        with open(r"GPGInfo\secret_key_to_export.asc","r") as file:
             private_key_data = file.read()
         
         
@@ -59,8 +55,9 @@ while option != "end":
         print("\n")
     elif option == "d":
 
-        with open(r"C:\Users\Darkm\GPGInfo\message_to_decrypt.asc", "r") as file:
+        with open(r"GPGInfo\message_to_decrypt.asc", "r") as file:
             message_to_decrypt = file.read()
         encryption_functions.decrypt_message(gpg, message_to_decrypt)
         print("\n")
+        
         

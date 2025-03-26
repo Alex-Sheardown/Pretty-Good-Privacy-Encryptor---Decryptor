@@ -1,8 +1,4 @@
-import tkinter
-import PyQt6
-import gnupg
-import os
-import datetime
+
 
 # From gnupg documentation: GnuPG works on the basis of a “home directory” which is used to store public and private keyring files as well as a trust database.
 # You need to identify in advance which directory on the end-user system will be used as the home directory,
@@ -27,20 +23,17 @@ def encrypt_message(myGnu):
 
     phrase_to_encrypt = input("Enter a message you want to encrypt: ")
 
-    selected_passphrase = input("input a passhprase for the encryption: ")
-
     encryptedData = myGnu.encrypt(
         phrase_to_encrypt,
         recipients=selected_fingerprint,
-        passphrase=selected_passphrase,
     )
 
     if encryptedData.ok:
         print(
-            "Encryption successful, message was stored in your specified file path."
+            "Encryption successful."
         )
         
-        with open(r"C:\Users\Darkm\GPGInfo\message_to_decrypt.asc",'w') as file:
+        with open(r"GPGInfo\message_to_decrypt.asc",'w') as file:
             file.write(str(encryptedData))
     else:
         print("Encryption Failed: ")
@@ -81,6 +74,16 @@ def list_keys(myGnu):
         print(f" {iterable} User: {key['uids'][0]}")
         iterable += 1
 
+def list_private_keys(myGnu):
+    iterable = 1
+    private_keys = myGnu.list_keys(secret=True)
+    if(len(private_keys) <= 0):
+        print("There are no private keys")
+    else:
+        
+        for key in private_keys:
+            print(f"{iterable} Secret Key: {key['fingerprint']} - {key['keyid']} - {key['uids']}")
+            iterable += 1
 
 # Decrypts a given string with a passphrase
 # myGnu: gpg object containing a keyring of gnu keys.
@@ -102,6 +105,7 @@ def decrypt_message(myGnu, encryptedMessage):
 
     else:
         print("Decryption has failed:", decrypted_message.status)
+        print("More details:", decrypted_message.stderr)
         return None
 
 
@@ -127,10 +131,8 @@ def export_key(myGnu):
     public_key = myGnu.export_keys(selected_key_id)
     secret_key = myGnu.export_keys(selected_key_id, secret=True, passphrase=password)
 
-    public_key_path = r"C:\Users\Darkm\GPGInfo\key_export.asc"
-    secret_key_path = r"C:\Users\Darkm\GPGInfo\secret_key_to_export.asc"
-
-    # try except isn't working, why?
+    public_key_path = r"GPGInfo\key_export.asc"
+    secret_key_path = r"GPGInfo\secret_key_to_export.asc"
 
     with open(public_key_path, "w") as file:
         file.write(str(public_key))
@@ -141,7 +143,7 @@ def export_key(myGnu):
         )
     else:
         with open(secret_key_path, "w") as file:
-            file.write(str(public_key))
+            file.write(str(secret_key))
 
     print("The secret key was exported successfully!")
 
@@ -180,3 +182,4 @@ def print_key_details(myGnu):
         print(f"Expires: {key.get('expires', 'Never')}")
         print(f"Trust: {key.get('trust', 'Unknown')}")
         print("-" * 40)
+

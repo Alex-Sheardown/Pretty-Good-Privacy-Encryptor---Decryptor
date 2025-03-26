@@ -17,13 +17,46 @@ This project is a simple PGP (Pretty Good Privacy) tool for encrypting and decry
 
 ## Requirements
 
+This software requires that Gnupg is installed.
+It is reccomended that Kleopatra is installed as well.
+For Windows Gnupg and Kleopatra can be installed via GPG4Win.
+
+Gpg4Win can be found here: https://www.gpg4win.org/
+
+Additionally, it might be required to install Gnupg in python with the following command:
+pip install python-gnupg
+
+After installing these programs the software should run.
+
+Kleopatra can be used in addition to this software to manage keys.
+
+## Passphrases
+
+All passphrases for created keys should be saved somewhere secure as they cannot be recovered if lost!
+
+## Exported Keys and Messages
+
+Public and private keys as well as encrypted messages are saved to the .asc files in the GPGInfo folder.
+
+Private keys require a passcode to export while public keys do not.
+
+Messages or keys should be saved elsewhere since the file is overwritten when exporting a new key or encrypting a new message.
+
+Imported keys need to be certified using a key already present in the keyring before they can be used.
+This is done by selecting the uncertified key in Kleopatra, right clicking, and selecting certify key.
+Another key that is certified must be selected and the password of that key entered to complete certification.
+
+Kleopatra can be used to import keys from the aforementioned files as well.
+
+The passphrase used to decrypt a message is the passphrase used when creating a key.
+
+
+
 ### **Programming Language & Libraries**
 
 - **Python (Recommended Version: 3.x)**
 - **Libraries:**
   - `gnupg` (Python GnuPG wrapper)
-  - `tkinter` (For a simple GUI, optional)
-  - `PyQt` (For an advanced GUI, optional)
 
 
 
