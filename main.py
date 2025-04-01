@@ -26,6 +26,7 @@ while option != "end":
         + "im: import a key \n"
         + "d: decrypt a message \n"
         + "end: terminate the program. \n"
+        
     )
 
     if option == "l":
@@ -45,13 +46,10 @@ while option != "end":
         
         with open(r"GPGInfo\key_export.asc","r") as file:
             key_data = file.read()
+
         
         
-        with open(r"GPGInfo\secret_key_to_export.asc","r") as file:
-            private_key_data = file.read()
-        
-        
-        encryption_functions.import_key(gpg, key_data,private_key_data)
+        encryption_functions.import_key(gpg, key_data)
         print("\n")
     elif option == "d":
 
@@ -59,5 +57,3 @@ while option != "end":
             message_to_decrypt = file.read()
         encryption_functions.decrypt_message(gpg, message_to_decrypt)
         print("\n")
-        
-        

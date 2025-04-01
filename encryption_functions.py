@@ -1,4 +1,4 @@
-
+import getpass 
 
 # From gnupg documentation: GnuPG works on the basis of a “home directory” which is used to store public and private keyring files as well as a trust database.
 # You need to identify in advance which directory on the end-user system will be used as the home directory,
@@ -14,14 +14,22 @@ def encrypt_message(myGnu):
     public_keys = myGnu.list_keys()
 
     selected_index = (
-        int(input("Enter the index of the key you want to use to encrypt the data: "))
+        int(input("Please enter the index of the key for the intended recipient: "))
         - 1
     )
 
     selected_key = public_keys[selected_index]
     selected_fingerprint = selected_key["fingerprint"]
+    
+    
+    encrypt_a_file = input("Would you like to encrypt a text file or input a message to encrypt? y/n: " )
+    
+    if(encrypt_a_file =="y"):
+        with open(r"GPGInfo\txt_for_encryption.txt",'r') as file:
+            phrase_to_encrypt = file.read()
+    else:
 
-    phrase_to_encrypt = input("Enter a message you want to encrypt: ")
+        phrase_to_encrypt = input("Enter a message you want to encrypt: ")
 
     encryptedData = myGnu.encrypt(
         phrase_to_encrypt,
@@ -30,7 +38,7 @@ def encrypt_message(myGnu):
 
     if encryptedData.ok:
         print(
-            "Encryption successful."
+            "Encryption successful. \n"
         )
         
         with open(r"GPGInfo\message_to_decrypt.asc",'w') as file:
@@ -45,7 +53,9 @@ def make_user_key(myGnu):
 
     name = input("Enter a username: ")
     email = input("Enter your email address: ")
-    passphrase = input("Enter a passphrase: ")
+    
+    
+    passphrase = getpass.getpass(prompt="Please enter a passphrase for your private key: ")
 
     inputData = myGnu.gen_key_input(
         key_type="RSA",
@@ -57,7 +67,7 @@ def make_user_key(myGnu):
     try:
 
         myGnu.gen_key(inputData)
-        print("Key was created successfully!")
+        print("Key creation successful. \n")
 
     except Exception as e:
         print(e)
@@ -69,30 +79,20 @@ def list_keys(myGnu):
     iterable = 1
     keys = myGnu.list_keys()
 
-    print("Public Key IDs:")
+    print("Public Key IDs: \n")
     for key in keys:
         print(f" {iterable} User: {key['uids'][0]}")
         iterable += 1
+    
 
-def list_private_keys(myGnu):
-    iterable = 1
-    private_keys = myGnu.list_keys(secret=True)
-    if(len(private_keys) <= 0):
-        print("There are no private keys")
-    else:
-        
-        for key in private_keys:
-            print(f"{iterable} Secret Key: {key['fingerprint']} - {key['keyid']} - {key['uids']}")
-            iterable += 1
 
 # Decrypts a given string with a passphrase
 # myGnu: gpg object containing a keyring of gnu keys.
 # encryptedMessage: String of an encrypted message around 1024 characters long.
-# requires GPG headers in order to recognize it as an encrypted message
 # requires the public key to be present in the keyring.
 def decrypt_message(myGnu, encryptedMessage):
 
-    passphrase = input("Please enter the password to decrypt the message: ")
+    passphrase = getpass.getpass(prompt="Please enter your key's password to encrypt the message: ")
 
     decrypted_message = myGnu.decrypt(encryptedMessage, passphrase=passphrase)
 
@@ -109,8 +109,7 @@ def decrypt_message(myGnu, encryptedMessage):
         return None
 
 
-#exports a public key and its' corresponding secret key.
-#secret key requires a valid passphrase or is empty.
+#exports a public key to be shared.
 def export_key(myGnu):
 
     list_keys(myGnu)
@@ -126,44 +125,19 @@ def export_key(myGnu):
 
     selected_key_id = selected_key["keyid"]
 
-    password = input("Enter the passphrase to export the secret key: ")
-
     public_key = myGnu.export_keys(selected_key_id)
-    secret_key = myGnu.export_keys(selected_key_id, secret=True, passphrase=password)
-
-    public_key_path = r"GPGInfo\key_export.asc"
-    secret_key_path = r"GPGInfo\secret_key_to_export.asc"
-
-    with open(public_key_path, "w") as file:
-        file.write(str(public_key))
-
-    if secret_key == "":
-        print(
-            "You may have entered an incorrect password, so the secret key export is empty."
-        )
-    else:
-        with open(secret_key_path, "w") as file:
-            file.write(str(secret_key))
-
-    print("The secret key was exported successfully!")
+    
 
 
-# adds the specified key into the keyring.
-def import_key(myGnu, keyData,secretKeyData):
+#adds the specified key into the keyring.
+def import_key(myGnu, keyData):
 
     import_result = myGnu.import_keys(keyData)
-    secret_import_result = myGnu.import_keys(secretKeyData)
 
     if import_result == 0:
-        print("No  public keys were imported, did you use a proper key and include the headers?")
+        print("No public keys were imported, did you use a proper key and include the headers?")
     else:
-        print("Key was imported successfully! ")
-        
-    if secret_import_result == 0:
-        print("Secret key wasn't imported, perhaps headers weren't included or the file was empty?")
-    else:
-        print("Secret key was imported successfully!")
-
+        print("Key was imported successfully. Please certify the key in Kleopatra for security purposes. ")
 
 # lists the key details, for debugging at the moment.
 def print_key_details(myGnu):

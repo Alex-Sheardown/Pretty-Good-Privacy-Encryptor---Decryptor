@@ -17,13 +17,14 @@ This project is a simple PGP (Pretty Good Privacy) tool for encrypting and decry
 
 ## Requirements
 
-This software requires that Gnupg is installed.
-It is reccomended that Kleopatra is installed as well.
-For Windows Gnupg and Kleopatra can be installed via GPG4Win.
+This software requires that Gnupg is installed on your system and that Gnupg is installed in Python as well.
+For Windows, Gpg4Win is used and includes key management software Kleopatra.
 
 Gpg4Win can be found here: https://www.gpg4win.org/
 
-Additionally, it might be required to install Gnupg in python with the following command:
+Additional instructions for installation on your Operating System can be found here: https://gnupg.org/download/index.html
+
+Installing Gnupg within Python is done with the following command:
 pip install python-gnupg
 
 After installing these programs the software should run.
@@ -36,10 +37,7 @@ All passphrases for created keys should be saved somewhere secure as they cannot
 
 ## Exported Keys and Messages
 
-Public and private keys as well as encrypted messages are saved to the .asc files in the GPGInfo folder.
-
-Private keys require a passcode to export while public keys do not.
-The passcode is the one input during key creation.
+Public keys as well as encrypted messages are saved to the .asc files in the GPGInfo folder.
 
 Messages or keys should be saved elsewhere since the file is overwritten when exporting a new key or encrypting a new message.
 
@@ -58,28 +56,28 @@ When starting the program the user will be prompted to enter a letter to perform
 
 These are the following:
 
-l: lists all of the keys in the current gnu keyring.
+l:Lists all of the keys in the current gnu keyring.
 
-c: prompts the user to enter information to create a new public and private key.
+c:Prompts the user to enter information to create a new public and private key.
 
-e: prompts the user to select the index of the key they want to use to encrypt a message, then prompts the user to
-enter the message they would like encrypted.
+e:Prompts the user to select the index of the recipient of a message they want encrypted.
+Text from the "txt_for_decryption" file can be used, or a message may be manually entered.
 
-ex:exports a key from the selected index, asks for a passphrase to export the secret key, otherwise only exports the public key.
+ex:Exports a public key from the selected index. This should be shared with other users for sharing of encrypted messages.
 
-Keys are saved in the key_export.asc and secret_key_to_export.asc files in the GPGInfo folder. They should be copied elsewhere as running the function again overwrites these files.
+Keys are saved in the key_export.asc file in the GPGInfo folder. They should be copied elsewhere as running the function again overwrites these files.
 
-im: imports a key and secret key into the keyring if they exist. Uses the key_export and secret_key_to_export files in the GPGInfo folder.
+im:Imports a key into the keyring if they exist. Uses the key_export file in the GPGInfo folder.
 
-Keys imported in this way need to be certified with Kleopatra, instructions for this can be found above. 
+Keys imported in this way need to be certified with Kleopatra for security purposes. instructions for this can be found above. 
 
-d: prompts the user to decrypt a message using the password of the key that was used to encrypt it.
+d:Prompts the user to decrypt a message using the password of the key that was used to encrypt it.
 
 Gives a no key error if the password entered is incorrect. Otherwise displays the message that was decrypted in the terminal.
 
 Passwords to decrypt only need to be used once, as long as the key used is still in the keyring.
 
-end: closes the program.
+end:Terminates the program.
 
 
 ## Running from the windows terminal
@@ -115,9 +113,10 @@ This can be done by right clicking and selecting the 'open in terminal' option w
 ## Expected Workflow
 
 1. **User generates or imports a PGP key pair (public & private).**
-2. **User encrypts a message using a recipient’s public key.**
+2. **User imports  and certifies the public key of the intended recipient using Kleopatra**
+3. **User encrypts a message using a recipient’s public key.**
 3. **User shares the encrypted message.**
-4. **Recipient decrypts it using their private key.**
+4. **Recipient decrypts it using their private key's passhprase.**
 
 ## Notes
 
@@ -131,7 +130,6 @@ This can be done by right clicking and selecting the 'open in terminal' option w
 - Implement encryption and decryption functions.
 - Develop a simple UI prototype.
 - Test usability and security measures.
-- Allow for certification of keys within the software
 
 If you have any questions, feel free to reach out!
 
